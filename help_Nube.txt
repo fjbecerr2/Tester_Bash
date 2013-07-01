@@ -1,0 +1,18 @@
+Funcionamiento del fichero Nube.sh
+----------------------------------
+Definicion de uso:
+sh nube.sh [UNIDAD DE ORIGEN] [UNIDAD DE DESTINO] [CARPETA]
+
+-- Por defecto se establece la carpeta de origen en [UNIDAD ORIGEN]/nube
+y la de destino en [UNIDAD DESTINO]/nube
+por lo que AMBAS CARPETAS DEBEN EXISTIR para el correcto funcionamiento
+
+--- Ejemplo:---
+- Copiar la carpeta NUBE/DROPBOX ubicada en la unidad D: a 
+/NUBE en la unidad G:
+
+sh nube.sh D G DROPBOX
+
+-- Al finalizar la operacion se generara en el DESTINO un fichero
+-- con nombre: FActualizado.txt con informacion sobre la copia
+-- Este fichero tambien se muestra por pantalla
