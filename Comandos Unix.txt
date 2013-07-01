@@ -1,0 +1,145 @@
+logout			-> Salir
+exit			-> Salir
+history			-> Lista todas las órdenes dadas hasta ese momento
+![comienzo orden]	-> Lanzará la última orden coincidente con ese comienzo ya utilizada
+
+-----------
+id			-> Identifica usuario
+who			-> Usuarios conectados
+whoami			-> Identificar usuario
+finger usuario		-> Datos de un usuario
+hostname		-> Nombre del equipo
+uname -a		-> Nombre del S.O.
+pwd			-> Localizacion actual
+--------
+man nombre-comando	-> Ayuda sobre comando (q sale pantalla)
+man sh			-> Información shell
+whatis
+apropos
+------- ORDENES NO LATERALES --------
+echo texto		-> Texto a pantalla
+banner texto		-> Texto en formato grande
+date			-> Mostrar fecha
+sleep tiempo		-> Detiene por segundos
+cat fichero		-> Visualizar contenido
+cat f1 f2 > f3		-> Concatenar ficheros
+wc [-lwc] f1		-> Cuenta l(lines), w(palabras), c(caracteres) de un fichero
+ls			-> Listar directorio
+ls fichero		-> Listar ficheros coincidentes (usar comodines)
+ls > fichero		-> Redireccionar listado de directorio
+ls >> fichero		-> Añade listado de directorio
+ls -l			-> Mostrar permisos
+			-> d indica directorio 
+			-> 3/3/3 dígitos propietario/grupo/otros
+ls -a			-> Mostrar archivos ocultos (empiezan por .)
+ls xx[1,2].txt		-> Mostrar ficheros 1 y 2
+ls dirA/???[0-9] -R	-> Directorios que cumplan la condicion
+ls dirA/???[!0-9] -R	-> Directorio sin numeros al final
+ls dirA/???[a-z] -R	-> Directorios con un caracter final
+			-a Lista todos los ficheros (incluso los ocultos).
+			-t Ordena por fecha de creación.
+			-p Marca los directorios.
+			-r Invierte el orden.
+			-s Indica el tamaño.
+			-l Formato largo. Indica protecciones, propietario, grupo, tamaño y fecha de
+			creación de cada fichero.
+			-F Distingue entre ficheros ordinarios, directorios y ejecutables.
+			-R Incluir subdirectorios
+cd			-> Te devuelve al directorio home del usuario
+~			-> Abreviatura de home [Alt+126]
+cd directorio		-> Posicionarse en el directorio
+cd /directorio		-> UNIX puro.
+mkdir directorio	-> Crear un directorio.
+rmdir directorio	-> Borrar directorio
+rm -fr 			-> Borra directorio no vacío
+file fichero		-> Informa del tipo del fichero
+cp f1 f2		-> Duplicar un fichero
+cp -i f1 f2		-> Pide confirmación
+cp -i f1 f2		-> Pone fecha y hora actual
+cp -r d1 d2		-> Duplicar directorio y contenido
+mv f1 f2		-> Renombrar fichero
+mv d1 d2		-> Renombrar un directorio.
+mv hh.txt ~/hojab/	-> Mover un fichero
+ln [i] f1 f2		-> Enlazar ficheros
+rm fichero		-> Eliminar fichero
+rm -i fichero		-> Borra fichero y pide confirmación
+rmdir -r directorio	-> Borrar directorio y contenido
+
+head [-n] f1		-> Muestra 10 o n primeras líneas de un fichero
+tail [-n] f1		-> Muestra 10 o n últimas líneas de un fichero	
+paste f1 f2		-> Concatena ficheros horizontalmente
+find d1 		-> Buscar ficheros (múltiples opciones)
+chown propietario f1	-> Cambia el propietario de un fichero
+
+chmod permisos f1	-> Modificar permisos
+[Donde permisos indica los permisos a cambiar y nombre el fichero o directorio afectado.
+Los permisos se indicarán como un número de 3 cifras, uno para el propietario, otro para el grupo y otro para
+todos. Para ello se pondrá a 1 cada permiso que se quiera activar. Por ejemplo, supongamos que queremos poner los
+permisos rwx r -- r-- , es decir, 111 100 100, con lo que el número será 744. Para poner todos los permisos será 777 y
+para poner solo permisos para el propietario será 700.
+chmod o+r fichero Se da permiso de lectura al resto de usuarios.
+chmod g+wx fichero Se da permiso de escritura y ejecución al grupo.
+chmod o-rwx fichero Se quitan todos los permisos al resto de usuarios.
+
+chown propietario f1	-> Cambia el propietario de un fichero
+chgrp grupo f1		-> Cambia el grupo de un fichero
+
+rcp f1 f2		-> Copiar fichero al sevicio remoto
+
+grep cadena fichero	-> Buscar una cadena en un fichero
+
+
+
+
+enf			-> Variables de entorno
+passwd  		-> Cambiar contraseña
+df			-> Bloques libres en disco
+stty erase [Tecla]	-> Redefinir la tecla que permite borrar
+touch fichero		-> Crea un fichero nuevo o accede a él.
+chgrp			-> Cambia el grupo de un fichero
+
+---------- SHEL -------------
+set 			-> Muestra variables de entorno
+unset [variable]	-> Borrar variable, sin variable las borra todas
+export [variable]	-> Exporta variable al shell para manipularla temporalmente (no afecta al sistema)
+ps 			-> Información del sistema}
+-e	Todos los procesos del sistema
+-f	Listado más completo
+-l	Listado largo
+[PID: Número de identificación del proceso
+PPID: Número de identificación del proceso padre (aquel proceso que creó a
+éste)]
+
+comando &		-> permite ejecutar un comando en segundo plano (aparece en ps)
+fg [pid_proceso]	-> pasa un proceso a primer plano (sin pid es el último)
+bg [pid-proceso]	-> pasa un proceso a segun o plano
+nice [-n] comandos	-> baja la prioridad de un proceso
+nohup comandos &	-> comando inmune a señal de finalización
+kill [-snombre|-nseñal|-l] pid -> Abortar procesos
+kill -9 pid		-> obliga al proceso a cerrar aún estando protegido
+
+sort [-n -d ]fichero	-> Muestra salida ordenada (numerica/alfabetica) de un fichero
+sort f1>f2		-> Salida ordenada volcada en otro fichero
+sort -d f1 -of2		-> Salida ordenada volcada en otro fichero
+sort -r f2		-> Salida en orden inverso
+(Puede utilizar campos y separadores)
+grep plantilla ficheros	-> Busca la plantilla en los ficheros
+grep main *.c		-> Muestra ficheros y línea encontrada
+grep -n main *.c	-> Muestra ficheros, nº y línea
+grep -c	main *.c	-> Muestra ficheros y nº línea
+grep -v main *.c	-> Muestra las que no contiene la plantilla
+grep -x main *.c	-> Muestra las que coinciden al completo
+tee fichero		-> Vuelca la salida a un fichero
+ls|tee f1|sort		-> Fichero ordenado
+cut [-clist] fichero	-> Contenido parcial de un fichero
+cut -c1-5 f1		-> Muestra primeros 5 caracteres
+pr f1			-> Salida paginada de un fichero o comando
+(permite separadores de columnas)
+diff f1 f2		-> Compara ficheros y muestra diferencias
+awk f1			-> Recupera línea de un fichero por patro
+awk 'NR==10,NR==200' f1	-> Recupera las líneas de la 10 a la 200
+awk 'NR<3' f1
+awk '$1' f1		-> Recupera el primer campo
+-------- USO DE PIPELINES | --------
+ls | cat >ficheros.txt
+ls | sort	-> Listado ordenador

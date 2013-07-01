@@ -1,0 +1,31 @@
+Lanzar varios comandos: (cd directorio; ls) saca ls del directorio indicado
+(cd d1; ls) muestra el ls de d1
+(cd derror && ls) no hace ls porque no se cumple la primera orden
+Se pueden usar los operadores && (and) y || (or)
+(cd derror; ls) da error de directorio y hace ls del actual
+
+Permite uso de comodines: * , ?, [??] (borra los que cumplan las dos condiciones
+rm reg* (borra todos los reg...)
+rm reg? (borra los reg+ cualquier caracter)
+rm reg[12] (borra reg1 y reg2)
+
+{} se utiliza para generar combinaciones a{b,c,d}e borraría:
+a abe ace y ade
+^ (alt+94) niega los comodines ^reg todos menos reg.
+~ (alt+126) sustituye a home
+
+Declarar una variable:
+PI=3.14
+echo $PI
+
+alias	-> Renombrar un comando
+alias dir='ls'
+unalias	-> Eliminar un alias
+read parametro	-> Leer un parámetro de entrada en una macro
+echo "Pon tu nombre"
+read nombre1
+
+Los shell que incluye Cygwin son sh y bash:
+sh Macro.sh	-> Permite ejecutar macros
+bash Macho.bsh	-> Permite ejecutar macros
+sh macro
