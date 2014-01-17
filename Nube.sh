@@ -1,11 +1,11 @@
-﻿#!/bin/bash
+#!/bin/bash
 #Nube.sh
 #---
 # Versión 1.7
 # Autor: Fco. J. Becerra
 # email: fjbecerr2@gmail.com
 # fecha: 08/May/2013
-# update: 01/07/2013
+# update: 21/10/2013
 #--
 #Copia el contenido de Nube en un usb
 #
@@ -13,156 +13,246 @@
 #PARA EVITAR ERRORES CON EL SALTO DE LINEA!!!!
 #
 # ..........................................................
+# Variables
+ORIGEN=`pwd` # Directorio Origen
+AYUDA=`pwd`/help_nube.txt # Archivo de ayuda
+declare -i ERROR=0 # Control de errores, declarado como entero
+ORIGEN_COPIA_TEMP=/cygdrive/[RUTA]/nube/[CARPETA] # 
+DESTINO_COPIA_TEMP=/cygdrive/[RUTA]/nube #
+ORIGEN_COPIA=/cygdrive/$1/nube/$3 # 
+DESTINO_COPIA=/cygdrive/$2/nube/$3 #
+DESTINO=/cygdrive/$2/nube #
+RUTAS=0 # Introducir los parámetros de las rutas 0 -> 1 Utilizar rutas completa
+NORIGEN=0 # Nº de Archivos
+FECHA=`date`+%D;echo #Fecha abreviada
+# ********************** #
+func_Mensaje () {		#
+	echo " "
+	echo "________________________" #
+	echo "|                      | " # 
+	echo "|      NUBE->USB       | " # 
+	echo "|      VERSION: 1.8.1    | " #
+	echo "________________________" #
+	#Información de ayuda
+	echo "------------------------------------------------------------------" #
+	echo "<<< (Para obtener ayuda de funcionamiento nube -help) >>>" #
+	echo "------------------------------------------------------------------" #
+} #
+# ********************** #
+func_VerRutas () {		#
+	echo " Rutas predefinicas"
+	echo "-> ORIGEN ACTUAL" #
+	echo ORIGEN #
+	echo "-> ORIGEN DE DATOS" #
+	echo "/cygdrive/$1/nube/$3" #
+	echo /cygdrive/$1/nube/$3 #
+	echo "-> DESTINO " # 
+	echo "/cygdrive/$2/nube" #
+	echo /cygdrive/$2/nube #	
+} #
+# ********************** #
+#-Controlar si existe la ayuda
+func_ExisteAyuda () { #	
+	echo " " #
+	echo "--> Chequeando el fichero de ayuda: " $AYUDA	#	
+	if [[ -e "$AYUDA" ]] #
+	then #
+		echo "--> Fichero de ayuda	... OK"
+		ERROR=0 #
+	else	#
+		ERROR=1 #
+		echo "--> Fichero de ayuda	... ERROR"
+	fi #
+	echo " " #
+} #
+# ********************** #
+func_Cambiar_Rutas () { #
+	RUTA=0 # Rutas por defecto
+	echo "Sustitución de rutas predefinidas " #
+	echo "Ruta de origen : " $ORIGEN_COPIA_TEMP #
+	echo "Ruta de destino : " $DESTINO_COPIA_TEMP #
+	echo "Nueva rutas: " #
+	echo "Ruta de origen: ... " #
+	read ORIGEN_COPIA_TEMP #
+	echo "Ruta de destino : " #
+	read DESTINO_COPIA_TEMP #	
+	echo "Nuevas de rutas predefinidas " #
+	echo "Ruta de origen : " $ORIGEN_COPIA_TEMP #
+	echo "Ruta de destino : " $DESTINO_COPIA_TEMP #
+	# Testear la nueva ruta
+	test -d $ORIGEN_COPIA_TEMP #
+	if [[ $? = 0 ]] #
+	then #
+		test -d $ORIGEN_COPIA_TEMP #	
+		if [[ $? = 0 ]] #
+		then #
+			RUTA=1 #
+		else #
+			echo "No existe la ruta DESTINO" #			
+		fi #	
+	else #
+		echo "No existe la ruta ORIGEN" #
+	fi #			
+	} #
 # Función para Testear los directorios
 func_ExisteOrigen () { #
-		test -d $ORIGEN #
-		existe_Origen=$?#
+	test -d $ORIGEN_COPIA #
+	if [[ $? = 0 ]] #
+	then #
+		ERROR=0 #
+	else # 
+		ERROR=1 #
+	fi	#		
 } #
-#
+# ***********************
 func_ExisteDestino () { #
-	test -d $DESTINO #
-	existe_Destino=$?
+	test -d $DESTINO_COPIA #
+	if [[ $? = 0 ]] #
+	then #
+		ERROR=0 #
+	else # 
+		ERROR=1 #
+	fi	#	
 } #
-#
-func_ExisteAyuda () { #	
-	echo "Ayuda...." 
-	test -r $1 # Parámetro de la función
-	existe_Ayuda=$? #	
+# *************************
+func_EliminarDestino() { #
+	echo " " #
+	echo "--- Se eliminaran los ficheros previos en destino "$DESTINO_COPIA/$3; sleep 2 #Pausa
+	rm -fr $DESTINO_COPIA/$3||echo "FALLO EN EL BORRADO PREVIO" #
+	if [[ $? = 0 ]] #
+	then #
+		ERROR=0 #
+	else # 
+		ERROR=1 #
+	fi	#
 } #
-#
-func_Existe_FActualizado () { #
-	test -w $DESTINO/FActualizado.txt #
-	existe_Actualizado=$? #
+# *************************
+func_Copiar() { #
+	echo " " #
+	echo "--- Se copian los archivos de "$ORIGEN_COPIA/$3; sleep 2 #Pausa
+	echo "--- A "$DESTINO_COPIA/$3; sleep 2 #Pausa
+	cp -r $ORIGEN_COPIA $DESTINO_COPIA #
+	if [[ $? = 0 ]] #
+	then #
+		ERROR=0 #
+	else # 
+		ERROR=1 #
+	fi	#
 } #
-#
-func_Asignar () { #
-	ORIGEN=/cygdrive/$1/nube/$3 # 
-	DESTINO=/cygdrive/$2/nube #
-	AYUDA=`pwd`/help_nube.txt #
+# *************************
+func_Infor() { #
+	# Añadir la información de actualización	
+	echo -e "- \r" >>$DESTINO/FActualizado.txt; echo #	
+	echo -e " - ACTUALIZADO: \r" >>$DESTINO/FActualizado.txt; echo #	
+	echo ${FECHA} >>$DESTINO/FActualizado.txt; echo #
+	echo -e " \r" >>$DESTINO/FActualizado.txt; echo #	
+	echo $ORIGEN_COPIA>>$DESTINO/FActualizado.txt;echo -e >>$DESTINO/FActualizado.txt;echo #
+	echo -e " \r" >>$DESTINO/FActualizado.txt; echo #	
+	echo $DESTINO_COPIA>>$DESTINO/FActualizado.txt;echo -e >>$DESTINO/FActualizado.txt;echo #
+	echo -n "--- Elementos copiados: ";ls $ORIGEN_COPIA| wc -l;echo #
+	echo "--- Contenido destino";ls $DESTINO_COPIA # Fin de la copia
+	# Mostrar la información de actualización
+	cat $DESTINO/FActualizado.txt;echo #prueba
 } #
-#
-#func_Recorrer_Elementos () {
-	# Comprobar los elementos
-	#for elemento in $My_Elementos #
-	#do #
-		#test -d $elemento #
-		#if [[ !$?=0 ]] #
-		#then #
-			#echo "ERROR NO EXISTE...  "$elemento #
-			#exit 1 #
-		#fi	#
-	#done #	
-#}
-#
-#
 # ------------------- COMIENZA EL SCRIPT ------------------
 #
-FECHA=`date` # 
-# Elementos implicados en las operaciones
-My_Elementos="/cygdrive/$1/nube/$3 /cygdrive/$2/nube"
-My_Menu="BDropbox Dropbox"
-ORIGEN=`pwd` # 
-DESTINO=`pwd`#
-AYUDA=`pwd`/help_nube.txt #
-# Controles
-existe_Origen=0 #
-existe_Destino=0 #
-existe_Ayuda=0 #
-existe_Actualizado=0 #
-NORIGEN=0 #
-#
-#
-banner "Nube->USB" # Info...
-#Información de ayuda
-echo "Version 1.6 "
-echo "------------------------------------------------------------------"
-echo "<<< (Para obtener ayuda de funcionamiento nube -help) >>>"
-echo "<<< (Para imprimit la ayuda nube -help_prn) >>>"
-echo "------------------------------------------------------------------"
-#
-#¿Lanzar el fichero de ayuda?
+func_Mensaje #
+# ***********
 if test "$1" = "-help" #Lanzar la ayuda
 then #
-	func_ExisteAyuda $AYUDA #
-	if [[ $existe_Ayuda=0 ]] #	
+	func_ExisteAyuda #	
+	if (($ERROR==0)) # if para expresión aritmética (( ...))	
 	then #		
-		cat $AYUDA;echo #		
-	else #
-		echo "ERROR PANTALLA- No se encontro el fichero de ayuda: "  #
-		echo $AYUDA
-		echo " ---------------------------------------- " #
-		echo "  --------------------------------------- " #
-		echo "    -----------------------------------    " #
+		cat $AYUDA;echo #			
 	fi	#
 	exit 1 #Salir	
 fi	#
 #
+# ¿Imprimir el fichero de ayuda?
+# -------------------------------------------
 if test "$1" = "-help_prn" #Lanzar imprimir la ayuda
 then #
-	func_ExisteAyuda #
-	if [[ !$existe_Ayuda=0 ]] #
+	func_ExisteAyuda #	
+	if (($ERROR==0)) # if para expresión aritmética (( ...))	
 	then #
-		echo "ERROR IMPRESORA- No se encontro el fichero de ayuda: "  #
-		echo $AYUDA #
-		echo " ---------------------------------------- " #
-		echo "  --------------------------------------- " #
-		echo "    -----------------------------------    " #
-	else #
+		echo "--> Imprimiendo Ayuda	... OK"
 		lpr $AYUDA;echo #
 	fi	#
 	exit 1 #Salir	
 fi #
-# 
-#
+# ****************
+#** Ver las rutas
+if test "$1" = "-vway" #Lanzar la ayuda
+then #
+	func_VerRutas #
+	exit 1 #Salir
+fi #
+#**Cambiar las rutas
+if test "$1" = "-way" #Lanzar la ayuda
+then #
+	func_Cambiar_Rutas #
+	exit 1 #Salir
+fi #	
+# OPERACIONES DE COPIA DE ARCHIVOS
+# Operacion que no hacen controles
+if test "$4" = "-err" #
+then #
+	func_EliminarDestino #
+	func_Copiar #
+	echo "Compruebe la copia" #
+	exit 1 #Salir
+fi #	
+# ---------- Comprobar ubicación de origen
+func_ExisteOrigen # 
+if [[ $ERROR = 0 ]] #
+then #
+	echo "--> Fichero en origen ... OK" $ORIGEN_COPIA #
+else #	
+	echo "--> Fichero en origen ... ERROR" $ORIGEN_COPIA #
+	exit 1 #Salir	
+fi	#
+# ---------- Comprobar ubicación de destino
+func_ExisteDestino # 
+if [[ $ERROR = 0 ]] #
+then #
+	echo "--> Ubicacion en destino ... OK" $DESTINO_COPIA #
+else #	
+	echo "--> Ubicacion en destino ... ERROR" $DESTINO_COPIA #
+	exit 1 #Salir	
+fi	#
+# ------ Mensajes
 echo " "
 echo " ---------------------------------------- "
-echo " Preparando copia desde: "${ORIGEN}
-echo " a Memoria USB: "$DESTINO
+echo " Preparando copia desde: "${ORIGEN_COPIA}
+echo " a Memoria USB: "$DESTINO_COPIA
 echo " ---------------------------------------- ";sleep 2 #Pausa
 #echo "--- Contenido de: "${ORIGEN};ls -m -R -1 $ORIGEN||echo "No existe el directorio"
-NORIGEN=`ls -m -R -1 $ORIGEN| wc -l` #Nº de archivos
+NORIGEN=`ls -m -R -1 $ORIGEN_COPIA| wc -l` #Nº de archivos
 echo 
 echo " ------------------------------------------"
-echo " Información de "$DESTINO
+echo " Información de destino"$DESTINO_COPIA
 echo " ------------------------------------------"
-df --total $DESTINO; sleep 3 #Pausa
+df -h --total $DESTINO_COPIA; sleep 3 #Pausa e informacion de disco destiono
+# COMIENZA LA OPERACION
 #
-echo " "
-echo "--- Se eliminaran los ficheros previos en destino "$DESTINO/$3; sleep 2 #Pausa
-rm -fr $DESTINO/$3||echo "FALLO EN EL BORRADO PREVIO"
-# 
-echo "--- Copiando... [-Se indicará cuando finalice la copia-]"
-cp -r $ORIGEN $DESTINO||echo "FALLO EN LA COPIA"
-#
-# Añadir la información de actualización
-test -w $DESTINO/FActualizado.txt
-if [[ $?=0 ]]
-then
-	echo -e "- ACTUALIZADO: ${FECHA}\r">>$DESTINO/FActualizado.txt;echo 
-	echo "  Usuario / Terminal : "`whoami` " / " `hostname`>>$DESTINO/FActualizado.txt;echo #
-	echo "  Elemento: "$DESTINO/$3>>$DESTINO/FActualizado.txt;echo -e "\r">>$DESTINO/FActualizado.txt;echo 
-fi
-#echo -n "--- Elementos copiados: ";ls -m -R -1 $ORIGEN| wc -l;echo 
-#echo "--- Contenido destino";ls -R $DESTINO # Fin de la copia
-echo " ------------"
-echo -n " TOTALES "$ORIGEN;echo ": "$NORIGEN
-# ls -m -R -1 $ORIGEN| wc -l #INFO...
-# Comprobar si existe y guardar datos
-test -w $DESTINO/FActualizado.txt
-if [[ $?=0 ]]
-then
-	echo -n " TOTALES "$DESTINO/$3;echo -n ": ";ls -m -R -1 $DESTINO/$3| wc -l #info...
-fi	
-echo " ------------"
-echo " "
-# Mostrar la información de actualización de las últimas líneas de fichero
-#df --total $DESTINO/$3;echo 
-#cat $DESTINO/FActualizado.txt;echo #prueba
-echo " Ultimas actualizaciones : "
-echo " ------------------------- "
-# Comprobar si existe y leer datos
-test -r $DESTINO/FActualizado.txt
-if [[ $?=0 ]]
-then
-	tail -8 $DESTINO/FActualizado.txt #prueba
-fi	
+func_EliminarDestino #
+if [[ $ERROR = 0 ]] #
+then #
+	echo "--> Eliminar ficheros en destino ... OK" $DESTINO_COPIA #
+else #	
+	echo "--> Eliminar ficheros en destino ... ERROR" $DESTINO_COPIA #
+	exit 1 #Salir	
+fi	#
+func_Copiar #
+if [[ $ERROR = 0 ]] #
+then #
+	echo "--> Copia de archivos ... OK" 
+	echo $ORIGEN_COPIA #
+	echo $DESTINO_COPIA #
+else #	
+	echo "--> Copia de archivos ... ERROR" $DESTINO_COPIA #
+	echo $ORIGEN_COPIA #
+	echo $DESTINO_COPIA #
+	exit 1 #Salir	
+fi	#
+func_Infor #

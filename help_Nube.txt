@@ -1,7 +1,19 @@
 Funcionamiento del fichero Nube.sh
 ----------------------------------
+Nube.sh
+Archivo Shell Script que permite copiar una carpeta a una unidad USB
+-> Operaciones de consulta:
+./Nube -hep		(Visualizar ayuda)
+./Nube -help_prn  	(Permite imprimir este fichero de ayuda)
+./Nube -vway		(ver las rutas predefinidas para las operaciones)
+
+-> Operaciones de copia de archivos:
+
 Definicion de uso:
 sh nube.sh [UNIDAD DE ORIGEN] [UNIDAD DE DESTINO] [CARPETA]
+
+Para saltar los controles
+sh nube.sh [UNIDAD DE ORIGEN] [UNIDAD DE DESTINO] [CARPETA] -err 
 
 -- Por defecto se establece la carpeta de origen en [UNIDAD ORIGEN]/nube
 y la de destino en [UNIDAD DESTINO]/nube
